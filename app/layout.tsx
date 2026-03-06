@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { QueryProvider } from "@/lib/query/provider";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { NuqsAdapter } from "nuqs/adapters/next/app"
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,11 +29,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
       >
-        <NuqsAdapter>
           <QueryProvider>
             {children}
           </QueryProvider>
-        </NuqsAdapter>
       </body>
     </html>
   );

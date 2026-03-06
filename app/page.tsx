@@ -2,10 +2,8 @@
 import { orpc } from '@/lib/query/orpc';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import React, { useMemo, useRef } from 'react'
-import { parseAsInteger, parseAsStringLiteral, useQueryState } from 'nuqs';
 import { Spinner } from '@/components/ui/spinner';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 import { getProxyUrl } from '@/lib/proxy';
 import {
   MediaPlayer,
@@ -37,20 +35,6 @@ function LandingPage() {
   const currentEpisode = parseInt(episode);
   const playerRef = useRef<MediaPlayerInstance>(null);
 
-    const [selectedCategory, setSelectedCategory] = useQueryState(
-    "category",
-    parseAsStringLiteral(["sub", "dub"] as const).withDefault("sub"),
-  );
-  const [selectedServer, setSelectedServer] = useQueryState(
-    "server",
-    parseAsStringLiteral(animeServers).withDefault("hd-1"),
-  );
-  const [selectedRange, setSelectedRange] = useQueryState(
-    "range",
-    parseAsInteger.withDefault(0),
-  );
-
-
   const { data: animeData, isLoading: infoLoading } = useQuery(
     orpc.anime.getAboutInfo.queryOptions({ 
       input: { id } 
@@ -72,25 +56,25 @@ function LandingPage() {
   );
   const episodeId = currentEpisodeData?.episodeId;
 
-  const { data: serversData } = useQuery({
-    ...orpc.anime.getEpisodeServers.queryOptions({
-      input: { episodeId: episodeId ?? "" },
-    }),
-    enabled: !!episodeId,
-    refetchOnWindowFocus: false,
-    placeholderData: keepPreviousData,
-  });
+  // const { data: serversData } = useQuery({
+  //   ...orpc.anime.getEpisodeServers.queryOptions({
+  //     input: { episodeId: episodeId ?? "" },
+  //   }),
+  //   enabled: !!episodeId,
+  //   refetchOnWindowFocus: false,
+  //   placeholderData: keepPreviousData,
+  // });
 
   
   const { data: sourcesData, isLoading: sourcesLoading } = useQuery({
     ...orpc.anime.getEpisodeSources.queryOptions({
       input: {
         episodeId: episodeId ?? "",
-        server: selectedServer,
-        category: selectedCategory,
+        server: "hd-1",
+        category: "sub",
       },
     }),
-    enabled: !!episodeId && !!selectedServer,
+    enabled: !!episodeId,
     refetchOnWindowFocus: false,
     placeholderData: keepPreviousData,
   });
@@ -116,8 +100,6 @@ function LandingPage() {
     notFound();
   }
 
-  const subServers = serversData?.sub ?? [];
-  const dubServers = serversData?.dub ?? [];
   const streamingSources = sourcesData?.sources ?? [];
     const allTracks =
     (sourcesData as { tracks?: { url: string; lang: string }[] })?.tracks ?? [];
@@ -143,7 +125,7 @@ function LandingPage() {
                   ) : streamingSources.length > 0 ? (
                     <MediaPlayer
                       ref={playerRef}
-                      key={`${episodeId}-${selectedServer}-${selectedCategory}`}
+                      key={`${episodeId}`}
                       src={{
                         src: getProxyUrl(streamingSources[0]?.url),
                         type: "application/x-mpegurl",

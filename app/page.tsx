@@ -40,11 +40,10 @@ const animeServers = [
 ] as const;
 type AnimeServer = (typeof animeServers)[number];
 
-export default function WatchPage({ params }: PageProps) {
-  const resolvedParams = use(params);
-  const { id, episode } = resolvedParams;
+export default function WatchPage() {
+  const id = "one-piece-100";
+  const episode = '1';
   const currentEpisode = parseInt(episode);
-  const router = useRouter();
   const playerRef = useRef<MediaPlayerInstance>(null);
   const hasRestoredRef = useRef(false);
   const lastSaveTimeRef = useRef(0);
@@ -143,53 +142,6 @@ export default function WatchPage({ params }: PageProps) {
     };
   }, [sourcesData]);
 
-  const relatedAnime = (animeData?.recommendedAnimes ?? []).filter(
-    (
-      item,
-    ): item is typeof item & { id: string; poster: string; name: string } =>
-      item.id !== null && item.poster !== null && item.name !== null,
-  );
-
-  const totalEpisodes = allEpisodes.length;
-  const prevEpisode = currentEpisode > 1 ? currentEpisode - 1 : null;
-  const nextEpisode =
-    currentEpisode < totalEpisodes ? currentEpisode + 1 : null;
-
-  // Prefetch adjacent episodes for instant navigation
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    if (!episodeId || !allEpisodes.length) return;
-
-    const prefetchEpisode = (episodeNum: number) => {
-      const ep = allEpisodes.find((e) => e.number === episodeNum);
-      if (!ep?.episodeId) return;
-
-      queryClient.prefetchQuery(
-        orpc.anime.getEpisodeServers.queryOptions({
-          input: { episodeId: ep.episodeId },
-        }),
-      );
-      queryClient.prefetchQuery(
-        orpc.anime.getEpisodeSources.queryOptions({
-          input: {
-            episodeId: ep.episodeId,
-            server: 'hd-2',
-            category: 'sub',
-          },
-        }),
-      );
-    };
-
-    if (prevEpisode) prefetchEpisode(prevEpisode);
-    if (nextEpisode) prefetchEpisode(nextEpisode);
-  }, [
-    episodeId,
-    allEpisodes,
-    prevEpisode,
-    nextEpisode,
-    queryClient,
-  ]);
 
   if (infoLoading) {
     return (

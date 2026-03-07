@@ -1,3 +1,5 @@
+'use client';
+
 import { orpc } from '@/lib/query/orpc';
 import { TAnimeAudio, TAnimeServer } from '@/lib/types';
 import { useQuery } from '@tanstack/react-query';

@@ -61,13 +61,13 @@ function LandingPage() {
   // const { info } = currentAnime.data.anime;
 
   const { data: animeData, isLoading: infoLoading } = useQuery(
-    orpc.anime.getAnimeAboutInfo.queryOptions({ 
-      input: { animeId: id } 
+    orpc.anime.getAboutInfo.queryOptions({ 
+      input: { id } 
     }),
   );
 
   const { data: episodesData, isLoading: episodesLoading } = useQuery({
-    ...orpc.anime.getAnimeEpisodes.queryOptions({ input: { animeId: id } }),
+    ...orpc.anime.getEpisodes.queryOptions({ input: { id } }),
     refetchOnWindowFocus: false,
     placeholderData: keepPreviousData,
   });
@@ -92,7 +92,7 @@ function LandingPage() {
 
   
   const { data: sourcesData, isLoading: sourcesLoading } = useQuery({
-    ...orpc.anime.getAnimeEpisodeSources.queryOptions({
+    ...orpc.anime.getEpisodeSources.queryOptions({
       input: {
         episodeId: episodeId ?? "",
         server: 'hd-2',

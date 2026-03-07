@@ -1,37 +1,29 @@
-import { 
-    getHomePage, 
-    getAZList,
-    getQtipInfo,
-    getAnimeAboutInfo,
-    getAnimeSearchResults,
-    getAnimeSearchSuggestion,
-    getProducerAnimes,
-    getGenreAnime,
-    getAnimeCategory,
-    getEstimatedSchedule,
-    getNextEpisodeSchedule,
-    getAnimeEpisodes,
-    getEpisodeServers,
-    getAnimeEpisodeSources,
+import {
+  getHomePage,
+  getAZList,
+  getAnimeAboutInfo,
+  getAnimeSearchResults,
+  getEpisodes,
+  getEpisodeServers,
+  getEpisodeSources,
+  getCategoryAnime,
+  getEstimatedSchedule,
+  getGenreAnime,
 } from "./procedures/anime";
 
-export const animeRouter = {
-    anime: {
-        getHomePage,
-        getAZList,
-        getQtipInfo,
-        getAnimeAboutInfo,
-        getAnimeSearchResults,
-        getAnimeSearchSuggestion,
-        getProducerAnimes,
-        getGenreAnime,
-        getAnimeCategory,
-        getEstimatedSchedule,
-        getNextEpisodeSchedule,
-        getAnimeEpisodes,
-        getEpisodeServers,
-        getAnimeEpisodeSources,
-    }
-}
+export const appRouter = {
+  anime: {
+    getHomePage,
+    getAZList,
+    getAboutInfo: getAnimeAboutInfo,
+    search: getAnimeSearchResults,
+    getEpisodes,
+    getEpisodeServers,
+    getEpisodeSources,
+    getCategoryAnime,
+    getEstimatedSchedule,
+    getGenreAnime,
+  },
+};
 
-export type TAnimeRouter = typeof animeRouter;
+export type AppRouter = typeof appRouter;

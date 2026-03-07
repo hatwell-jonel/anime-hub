@@ -1,5 +1,21 @@
 import type { HiAnime } from "aniwatch";
 
+export const animeServers = [
+    "hd-1",
+    "hd-2",
+    "megacloud",
+    "streamsb",
+    "streamtape",
+] as const;
+export type TAnimeServer = (typeof animeServers)[number];
+
+
+export const animeAudioTypes = [
+    "dub",
+    "sub",
+] as const;
+export type TAnimeAudio = (typeof animeAudioTypes)[number];
+
 // Re-export aniwatch types for use in components
 export type ScrapedHomePage = HiAnime.ScrapedHomePage;
 export type ScrapedAnimeAboutInfo = HiAnime.ScrapedAnimeAboutInfo;

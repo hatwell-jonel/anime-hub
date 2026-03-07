@@ -3,7 +3,7 @@ import type { InferClientOutputs } from "@orpc/client";
 import { RPCLink } from "@orpc/client/fetch";
 import { DedupeRequestsPlugin } from "@orpc/client/plugins";
 import type { RouterClient } from "@orpc/server";
-import { AppRouter } from "./router";
+import { TAnimeRouter } from "./router";
 
 function getBaseUrl() {
   if (typeof window !== "undefined") {
@@ -32,6 +32,6 @@ const link = new RPCLink({
   ],
 });
 
-export const orpcClient: RouterClient<AppRouter> = createORPCClient(link);
+export const orpcClient: RouterClient<TAnimeRouter> = createORPCClient(link);
 
-export type RouterOutputs = InferClientOutputs<RouterClient<AppRouter>>;
+export type RouterOutputs = InferClientOutputs<RouterClient<TAnimeRouter>>;

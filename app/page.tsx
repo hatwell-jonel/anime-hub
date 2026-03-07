@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import { Spinner } from '@/components/ui/spinner';
 import { getProxyUrl } from '@/lib/proxy';
 import {
@@ -16,6 +16,9 @@ import {
 import "@vidstack/react/player/styles/default/theme.css";
 import "@vidstack/react/player/styles/default/layouts/video.css";
 import useWatchAnime from './hooks/use-watch-anime';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { orpc } from '@/lib/query/orpc';
+import { notFound } from 'next/navigation';
 
 function LandingPage() {
   
@@ -25,117 +28,117 @@ function LandingPage() {
   const playerRef = useRef<MediaPlayerInstance>(null);
 
 
-  const {
-    currentAnime,
-    streamingSources,
-    subtitles,
-    thumbnailTrack,
-    currentAnimeEpisodeLoading,
-    animeQtipInfo
-  } = useWatchAnime({
-    animeId: id,
-    episodeId: currentEpisode,
-    selectedCategory: 'sub',
-    selectedServer: 'hd-2',
-  });
-
-    if (currentAnime.isLoading || animeQtipInfo.isLoading ) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Spinner className="size-8 text-red-500" />
-      </div>
-    );
-  }
-
-  if (!currentAnime.data?.anime?.info || !animeQtipInfo.data?.anime) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-foreground/60">Anime info not found.</p>
-      </div>
-    );
-  }
-
-  const { info } = currentAnime.data.anime;
-
-  // const { data: animeData, isLoading: infoLoading } = useQuery(
-  //   orpc.anime.getAboutInfo.queryOptions({ 
-  //     input: { id } 
-  //   }),
-  // );
-
-  // const { data: episodesData, isLoading: episodesLoading } = useQuery({
-  //   ...orpc.anime.getEpisodes.queryOptions({ input: { id } }),
-  //   refetchOnWindowFocus: false,
-  //   placeholderData: keepPreviousData,
+  // const {
+  //   currentAnime,
+  //   streamingSources,
+  //   subtitles,
+  //   thumbnailTrack,
+  //   currentAnimeEpisodeLoading,
+  //   animeQtipInfo
+  // } = useWatchAnime({
+  //   animeId: id,
+  //   episodeId: currentEpisode,
+  //   selectedCategory: 'sub',
+  //   selectedServer: 'hd-2',
   // });
 
-  // const allEpisodes = useMemo(
-  //   () => episodesData?.episodes ?? [],
-  //   [episodesData?.episodes],
-  // );
-  // const currentEpisodeData = allEpisodes.find(
-  //   (ep) => ep.number === currentEpisode,
-  // );
-  // const episodeId = currentEpisodeData?.episodeId;
-
-  // const { data: serversData } = useQuery({
-  //   ...orpc.anime.getEpisodeServers.queryOptions({
-  //     input: { episodeId: episodeId ?? "" },
-  //   }),
-  //   enabled: !!episodeId,
-  //   refetchOnWindowFocus: false,
-  //   placeholderData: keepPreviousData,
-  // });
-
-  
-  // const { data: sourcesData, isLoading: sourcesLoading } = useQuery({
-  //   ...orpc.anime.getEpisodeSources.queryOptions({
-  //     input: {
-  //       episodeId: episodeId ?? "",
-  //       server: 'hd-2',
-  //       category: 'sub',
-  //     },
-  //   }),
-  //   enabled: !!episodeId,
-  //   refetchOnWindowFocus: false,
-  //   placeholderData: keepPreviousData,
-  // });
-
-  // const anime = animeData?.anime;
-
-  
-  // if (infoLoading) {
+  //   if (currentAnime.isLoading || animeQtipInfo.isLoading ) {
   //   return (
-  //     <div className="min-h-screen bg-background flex items-center justify-center">
-  //       <Spinner className="size-10 text-foreground/20" />
+  //     <div className="min-h-screen flex items-center justify-center">
+  //       <Spinner className="size-8 text-red-500" />
   //     </div>
   //   );
   // }
 
-  // if (!anime) {
-  //   notFound();
+  // if (!currentAnime.data?.anime?.info || !animeQtipInfo.data?.anime) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center">
+  //       <p className="text-foreground/60">Anime info not found.</p>
+  //     </div>
+  //   );
   // }
 
-  // const info = anime.info;
+  // const { info } = currentAnime.data.anime;
+
+  const { data: animeData, isLoading: infoLoading } = useQuery(
+    orpc.anime.getAnimeAboutInfo.queryOptions({ 
+      input: { animeId: id } 
+    }),
+  );
+
+  const { data: episodesData, isLoading: episodesLoading } = useQuery({
+    ...orpc.anime.getAnimeEpisodes.queryOptions({ input: { animeId: id } }),
+    refetchOnWindowFocus: false,
+    placeholderData: keepPreviousData,
+  });
+
+  const allEpisodes = useMemo(
+    () => episodesData?.episodes ?? [],
+    [episodesData?.episodes],
+  );
+  const currentEpisodeData = allEpisodes.find(
+    (ep) => ep.number === currentEpisode,
+  );
+  const episodeId = currentEpisodeData?.episodeId;
+
+  const { data: serversData } = useQuery({
+    ...orpc.anime.getEpisodeServers.queryOptions({
+      input: { episodeId: episodeId ?? "" },
+    }),
+    enabled: !!episodeId,
+    refetchOnWindowFocus: false,
+    placeholderData: keepPreviousData,
+  });
+
   
-  // if (!info.poster || !info.name) {
-  //   notFound();
-  // }
+  const { data: sourcesData, isLoading: sourcesLoading } = useQuery({
+    ...orpc.anime.getAnimeEpisodeSources.queryOptions({
+      input: {
+        episodeId: episodeId ?? "",
+        server: 'hd-2',
+        category: 'sub',
+      },
+    }),
+    enabled: !!episodeId,
+    refetchOnWindowFocus: false,
+    placeholderData: keepPreviousData,
+  });
 
-  // const streamingSources = sourcesData?.sources ?? [];
-  //   const allTracks =
-  //   (sourcesData as { tracks?: { url: string; lang: string }[] })?.tracks ?? [];
-  // const thumbnailTrack = allTracks.find(
-  //   (t) => t.lang.toLowerCase() === "thumbnails",
-  // );
-  // const subtitles = allTracks.filter(
-  //   (t) => t.lang.toLowerCase() !== "thumbnails",
-  // );
+  const anime = animeData?.anime;
+
+  
+  if (infoLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Spinner className="size-10 text-foreground/20" />
+      </div>
+    );
+  }
+
+  if (!anime) {
+    notFound();
+  }
+
+  const info = anime.info;
+  
+  if (!info.poster || !info.name) {
+    notFound();
+  }
+
+  const streamingSources = sourcesData?.sources ?? [];
+    const allTracks =
+    (sourcesData as { tracks?: { url: string; lang: string }[] })?.tracks ?? [];
+  const thumbnailTrack = allTracks.find(
+    (t) => t.lang.toLowerCase() === "thumbnails",
+  );
+  const subtitles = allTracks.filter(
+    (t) => t.lang.toLowerCase() !== "thumbnails",
+  );
 
   return (
               <div className="relative rounded-lg md:rounded-2xl overflow-hidden">
                 <div className="aspect-video relative">
-                  {currentAnimeEpisodeLoading ? (
+                  {sourcesLoading ? (
                     <div className="absolute inset-0 flex items-center justify-center bg-background/80">
                       <div className="flex flex-col items-center gap-4">
                         <Spinner className="size-8 text-foreground/30" />

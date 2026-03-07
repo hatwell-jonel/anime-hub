@@ -15,7 +15,6 @@ import {
 } from "@vidstack/react/player/layouts/default";
 import "@vidstack/react/player/styles/default/theme.css";
 import "@vidstack/react/player/styles/default/layouts/video.css";
-import useWatchAnime from './hooks/use-watch-anime';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { orpc } from '@/lib/query/orpc';
 import { notFound } from 'next/navigation';

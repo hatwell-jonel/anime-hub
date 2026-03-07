@@ -157,6 +157,7 @@ export const getEpisodeSources = os.input(episodeSourcesSchema).handler(
     HiAnime.ScrapedAnimeEpisodesSources & {
       anilistID: number | null;
       malID: number | null;
+      tracks?: { url: string; lang: string }[];
     }
   > => {
     const data = await scraper.getEpisodeSources(

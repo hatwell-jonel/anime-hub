@@ -1,10 +1,10 @@
 import { isAllowedOrigin } from "@/lib/config/cors";
-import { appRouter } from "@/lib/orpc/router";
+import { animeRouter } from "@/lib/orpc/router";
 import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
 import { CORSPlugin } from "@orpc/server/plugins";
 
-const handler = new RPCHandler(appRouter, {
+const handler = new RPCHandler(animeRouter, {
   plugins: [
     new CORSPlugin({
       origin: (origin) => {

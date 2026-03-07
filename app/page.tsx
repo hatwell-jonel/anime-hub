@@ -147,7 +147,7 @@ function LandingPage() {
                   ) : streamingSources.length > 0 ? (
                     <MediaPlayer
                       ref={playerRef}
-                      key={`${episodeId}`}
+                      key={`${episode}`}
                       src={{
                         src: getProxyUrl(streamingSources[0]?.url),
                         type: "application/x-mpegurl",
